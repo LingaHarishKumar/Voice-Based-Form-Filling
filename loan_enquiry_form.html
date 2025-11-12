@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-based Loan Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            max-width: 1200px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        /* Left Section - Form */
+        .left-section {
+            padding: 40px;
+            border-right: 2px solid #f0f0f0;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #1e3c72;
+            margin-bottom: 8px;
+            font-size: 28px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #1e3c72;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 22px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #1e3c72;
+            background: white;
+        }
+
+        input.filled,
+        select.filled,
+        textarea.filled {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Right Section - Voice Recording */
+        .right-section {
+            padding: 40px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 0 20px 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        /* Transcription Box */
+        .transcription-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .transcription-box h3 {
+            color: #1e3c72;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .transcription-text {
+            color: #555;
+            line-height: 1.6;
+            font-size: 14px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        /* Entities Box */
+        .entities-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .entities-box h3 {
+            color: #1e3c72;
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .entity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .entity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #1e3c72;
+        }
+
+        .entity-field {
+            font-weight: 600;
+            color: #1e3c72;
+            font-size: 13px;
+            min-width: 120px;
+        }
+
+        .entity-value {
+            color: #333;
+            font-size: 13px;
+            flex: 1;
+        }
+
+        /* Microphone Section */
+        .mic-section {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .mic-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            font-size: 35px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(30, 60, 114, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .mic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 7px 20px rgba(30, 60, 114, 0.6);
+        }
+
+        .mic-button:active {
+            transform: scale(0.98);
+        }
+
+        .mic-button.recording {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+            }
+            50% { 
+                transform: scale(1.08);
+                box-shadow: 0 7px 25px rgba(231, 76, 60, 0.6);
+            }
+        }
+
+        .status {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 20px;
+        }
+
+        .status.recording {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .status.success {
+            color: #4caf50;
+        }
+
+        /* Audio Player */
+        .audio-container {
+            margin: 15px 0;
+            display: none;
+        }
+
+        audio {
+            width: 100%;
+            height: 40px;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e3c72;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #1e3c72;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .left-section {
+                border-right: none;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            .right-section {
+                border-radius: 0 0 20px 20px;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Section: Loan Application Form -->
+        <div class="left-section">
+            <div class="header">
+                <h1>🏦 Loan Application</h1>
+                <p class="subtitle">Speak to fill the form automatically using voice</p>
+            </div>
+
+            <form id="loanForm">
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="question-number">1</span>
+                        What type of loan are you interested in?
+                    </label>
+                    <select id="loanType" name="loanType">
+                        <option value="">Select loan type</option>
+                        <option value="Personal Loan">Personal Loan</option>
+                        <option value="Home Loan">Home Loan</option>
+                        <option value="Auto Loan">Auto Loan</option>
+                        <option value="Business Loan">Business Loan</option>
+                        <option value="Education Loan">Education Loan</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="question-number">2</span>
+                        What is the primary purpose of this loan?
+                    </label>
+                    <input type="text" id="loanPurpose" name="loanPurpose" 
+                           placeholder="e.g., Home Purchase, Business Expansion, Education">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="question-number">3</span>
+                        What is your desired loan amount?
+                    </label>
+                    <input type="text" id="loanAmount" name="loanAmount" 
+                           placeholder="e.g., ₹5,00,000 or 5 lakhs">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="question-number">4</span>
+                        Please tell us about your employment and income.
+                    </label>
+                    <textarea id="employmentIncome" name="employmentIncome" 
+                              placeholder="e.g., Employed | ₹6,00,000"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="question-number">5</span>
+                        What is your preferred repayment timeline?
+                    </label>
+                    <input type="text" id="repaymentTimeline" name="repaymentTimeline" 
+                           placeholder="e.g., 5 years, 60 months">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="question-number">6</span>
+                        Do you have any existing relationship with our bank?
+                    </label>
+                    <select id="bankRelationship" name="bankRelationship">
+                        <option value="">Select option</option>
+                        <option value="Yes">Yes - Existing Customer</option>
+                        <option value="No">No - New Customer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <!-- Submit button to save the completed application to CSV -->
+                    <button id="submitButton" type="button" style="background:#1e3c72;color:white;padding:12px 18px;border-radius:8px;border:none;cursor:pointer;margin-top:8px;font-weight:600;">Submit Application</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Right Section: Voice Recording Interface -->
+        <div class="right-section">
+            <div class="content-area">
+                <!-- Transcription Display -->
+                <div class="transcription-box" id="transcriptionBox">
+                    <h3>📝 Transcription</h3>
+                    <div id="transcriptionText" class="transcription-text"></div>
+                </div>
+
+                <!-- Entities Display -->
+                <div class="entities-box" id="entitiesBox">
+                    <h3>🏷️ Extracted Information</h3>
+                    <div id="entitiesList" class="entity-list"></div>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p class="loading-text">Processing your audio...</p>
+                </div>
+            </div>
+
+            <!-- Microphone Control (Fixed at Bottom) -->
+            <div class="mic-section">
+                <div class="audio-container" id="audioContainer">
+                    <audio id="audioPlayer" controls></audio>
+                </div>
+                
+                <button id="micButton" class="mic-button" title="Click to record">🎤</button>
+                <div id="status" class="status">Click the microphone to start recording</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const micButton = document.getElementById('micButton');
+        const status = document.getElementById('status');
+        const audioContainer = document.getElementById('audioContainer');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const transcriptionBox = document.getElementById('transcriptionBox');
+        const transcriptionText = document.getElementById('transcriptionText');
+        const entitiesBox = document.getElementById('entitiesBox');
+        const entitiesList = document.getElementById('entitiesList');
+        const loading = document.getElementById('loading');
+
+        // Form Fields
+        const loanType = document.getElementById('loanType');
+        const loanPurpose = document.getElementById('loanPurpose');
+        const loanAmount = document.getElementById('loanAmount');
+        const employmentIncome = document.getElementById('employmentIncome');
+        const repaymentTimeline = document.getElementById('repaymentTimeline');
+        const bankRelationship = document.getElementById('bankRelationship');
+
+        // Recording Variables
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // Field mapping
+        const fieldMapping = {
+            'loan_type': { element: loanType, displayName: 'Loan Type' },
+            'loan_purpose': { element: loanPurpose, displayName: 'Loan Purpose' },
+            'loan_amount': { element: loanAmount, displayName: 'Loan Amount' },
+            'employment_income': { element: employmentIncome, displayName: 'Employment & Income' },
+            'repayment_timeline': { element: repaymentTimeline, displayName: 'Repayment Timeline' },
+            'bank_relationship': { element: bankRelationship, displayName: 'Bank Relationship' }
+        };
+
+        // Microphone Button Click Handler
+        micButton.addEventListener('click', async () => {
+            if (!isRecording) {
+                await startRecording();
+            } else {
+                stopRecording();
+            }
+        });
+
+        // Start Recording Function
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    audioChunks.push(event.data);
+                });
+
+                mediaRecorder.addEventListener('stop', async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    audioPlayer.src = audioUrl;
+                    audioContainer.style.display = 'block';
+                    await processAudio(audioBlob);
+                });
+
+                mediaRecorder.start();
+                isRecording = true;
+                micButton.classList.add('recording');
+                status.textContent = '🔴 Recording... Click again to stop';
+                status.classList.add('recording');
+                status.classList.remove('success');
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                status.textContent = '❌ Could not access microphone';
+                status.classList.remove('recording', 'success');
+            }
+        }
+
+        // Stop Recording Function
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                micButton.classList.remove('recording');
+                status.textContent = '⏹️ Recording stopped. Processing...';
+                status.classList.remove('recording');
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        // Process Audio Function
+        async function processAudio(audioBlob) {
+            // Show loading, hide previous results
+            loading.style.display = 'block';
+            transcriptionBox.style.display = 'none';
+            entitiesBox.style.display = 'none';
+
+            try {
+                const formData = new FormData();
+                formData.append('audio', audioBlob, 'recording.wav');
+
+                const response = await fetch('/upload-audio', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                console.log('Response:', data);
+
+                if (data.success) {
+                    // Display transcription
+                    transcriptionText.textContent = data.transcription;
+                    transcriptionBox.style.display = 'block';
+
+                    // Fill form with extracted entities
+                    fillForm(data.entities);
+
+                    // Display entities
+                    displayEntities(data.entities);
+
+                    status.textContent = '✅ Form filled successfully!';
+                    status.classList.add('success');
+                    status.classList.remove('recording');
+                } else {
+                    status.textContent = '❌ Error: ' + (data.error || 'Unknown error');
+                    status.classList.remove('recording', 'success');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                status.textContent = '❌ Error processing audio';
+                status.classList.remove('recording', 'success');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        // Fill Form with Extracted Entities
+        function fillForm(entities) {
+            console.log('Filling form with entities:', entities);
+
+            entities.forEach(entity => {
+                const field = entity.field;
+                const value = entity.value;
+
+                if (fieldMapping[field]) {
+                    const formField = fieldMapping[field].element;
+                    
+                    // Handle different input types
+                    if (formField.tagName === 'SELECT') {
+                        // For select elements, try to match the value
+                        const options = Array.from(formField.options);
+                        const matchingOption = options.find(opt => 
+                            opt.value.toLowerCase() === value.toLowerCase() ||
+                            opt.text.toLowerCase().includes(value.toLowerCase())
+                        );
+                        
+                        if (matchingOption) {
+                            formField.value = matchingOption.value;
+                        } else if (value.toLowerCase() === 'yes' || value.toLowerCase() === 'no') {
+                            formField.value = value.charAt(0).toUpperCase() + value.slice(1);
+                        }
+                    } else {
+                        // For text inputs and textareas
+                        formField.value = value;
+                    }
+                    
+                    formField.classList.add('filled');
+                    console.log(`Filled ${fieldMapping[field].displayName}:`, value);
+                }
+            });
+        }
+
+        // Display Entities
+        function displayEntities(entities) {
+            entitiesList.innerHTML = '';
+
+            if (entities.length === 0) {
+                entitiesList.innerHTML = '<p style="color: #666; font-size: 14px;">No information extracted</p>';
+            } else {
+                entities.forEach(entity => {
+                    const item = document.createElement('div');
+                    item.className = 'entity-item';
+                    
+                    const fieldName = document.createElement('div');
+                    fieldName.className = 'entity-field';
+                    fieldName.textContent = fieldMapping[entity.field]?.displayName || entity.field;
+                    
+                    const fieldValue = document.createElement('div');
+                    fieldValue.className = 'entity-value';
+                    fieldValue.textContent = entity.value;
+                    
+                    item.appendChild(fieldName);
+                    item.appendChild(fieldValue);
+                    entitiesList.appendChild(item);
+                });
+            }
+
+            entitiesBox.style.display = 'block';
+        }
+
+        // Allow manual form editing
+        [loanType, loanPurpose, loanAmount, employmentIncome, repaymentTimeline, bankRelationship].forEach(field => {
+            field.addEventListener('input', () => {
+                if (field.value) {
+                    field.classList.add('filled');
+                } else {
+                    field.classList.remove('filled');
+                }
+            });
+        });
+
+        // Submit button handler: collect current form values and POST to server to save CSV
+        const submitButton = document.getElementById('submitButton');
+        if (submitButton) {
+            submitButton.addEventListener('click', async () => {
+                const payload = {
+                    loanType: loanType.value || '',
+                    loanPurpose: loanPurpose.value || '',
+                    loanAmount: loanAmount.value || '',
+                    employmentIncome: employmentIncome.value || '',
+                    repaymentTimeline: repaymentTimeline.value || '',
+                    bankRelationship: bankRelationship.value || '',
+                    transcription: transcriptionText.textContent || '',
+                    filename: ''
+                };
+
+                try {
+                    status.textContent = '💾 Saving application...';
+                    status.classList.remove('recording');
+
+                    const res = await fetch('/submit-application', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await res.json();
+                    if (result && result.success) {
+                        status.textContent = '✅ Application saved successfully!';
+                        status.classList.add('success');
+                        // Refresh the application to a new/empty state after a short delay
+                        setTimeout(() => {
+                            // reload the page so the form is fresh
+                            location.reload();
+                        }, 900);
+                    } else {
+                        status.textContent = '❌ Failed to save application: ' + (result.error || result.message || 'Unknown');
+                        status.classList.remove('success');
+                    }
+                } catch (err) {
+                    console.error('Error saving application:', err);
+                    status.textContent = '❌ Error saving application';
+                    status.classList.remove('success');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
