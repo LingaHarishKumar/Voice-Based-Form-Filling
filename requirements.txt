@@ -1,3 +1,9 @@
+pip>=26.0
+setuptools
+wheel
+numpy==1.26.4
+blis==0.7.9
+
 # Flask web framework
 flask==3.0.0
 
@@ -15,4 +21,5 @@ torch==2.1.0
 torchaudio==2.1.0
 
 # Werkzeug for secure filename handling (included with Flask but specified for clarity)
+
 werkzeug==3.0.1
