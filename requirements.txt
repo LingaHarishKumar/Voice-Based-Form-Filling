@@ -1,4 +1,3 @@
-```
 pip>=26.0
 setuptools
 wheel
@@ -20,4 +19,4 @@ openai-whisper
 # CPU-only PyTorch (lighter for Render)
 torch==2.1.0+cpu
 torchaudio==2.1.0+cpu
-```
+
