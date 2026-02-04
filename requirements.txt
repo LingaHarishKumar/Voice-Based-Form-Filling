@@ -1,0 +1,18 @@
+# Flask web framework
+flask==3.0.0
+
+# Enable Cross-Origin Resource Sharing (CORS)
+flask-cors==4.0.0
+
+# OpenAI Whisper for speech-to-text transcription
+openai-whisper
+
+# spaCy for Natural Language Processing and Named Entity Recognition
+spacy==3.7.2
+
+# Additional dependencies for audio processing
+torch==2.1.0
+torchaudio==2.1.0
+
+# Werkzeug for secure filename handling (included with Flask but specified for clarity)
+werkzeug==3.0.1
